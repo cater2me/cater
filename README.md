@@ -1,8 +1,6 @@
 # Cater
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cater`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Cater is a modular implementation of ServiceObject pattern
 
 ## Installation
 
@@ -22,7 +20,30 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class MyBusinessBehavior
+  # include module
+  include ::Cater::Service
+  
+  def serve(parameter)
+    error! unless parameter
+  end
+end
+
+# Now feel free to invoke .serve class method
+successful_service = MyBusinessBehavior.serve(true)
+successful_service.success?
+# true
+successful_service.error?
+# false
+
+error_service =  MyBusinessBehavior.serve(false)
+error_service.error?
+# true
+error_service.success?
+# false
+
+```
 
 ## Development
 
