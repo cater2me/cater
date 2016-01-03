@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/rubakas/cater.svg?style=shield&circle-token=5cab92a48428dd8408acf50bf2982b15af81dfed)](https://circleci.com/gh/rubakas/cater)
+
 # Cater
 
 Cater is a modular implementation of ServiceObject pattern
