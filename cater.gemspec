@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Andriy Tyurnikov"]
   spec.email         = ["Andriy.Tyurnikov@gmail.com"]
 
-  spec.summary       = %q{TODO: Modular implementation of ServiceObject pattern}
+  spec.summary       = "Modular implementation of ServiceObject pattern"
   # spec.description   = %q{TODO: Write a longer description or delete this line.}
   spec.homepage      = "https://github.com/rubakas/cater"
   spec.license       = "MIT"
