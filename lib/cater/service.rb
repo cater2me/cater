@@ -1,40 +1,58 @@
+require 'active_support/concern'
+require 'active_support/callbacks'
+
 module Cater
   class ServiceError < Exception; end
 
   module Service
-    def self.included(base)
-      base.extend ClassMethods
-      base.class_eval do
-        attr_accessor :message
+    extend ActiveSupport::Concern
 
-        def success?
-          fail "Service was not called yet" if @_service_success.nil?
-          @_service_success
-        end
+    included do
+      include ActiveSupport::Callbacks
 
-        def error!(message=nil)
-          message = message
-          raise ServiceError
-        end
+      attr_accessor :message
+      define_callbacks :serve
 
-        def error?
-          !success?
-        end
+      def success?
+        fail "Service was not called yet" if @_service_success.nil?
+        @_service_success
+      end
 
-        private
-        
-        def _service_success=(result)
-          @_service_success = result
-        end
+      def error!(message=nil)
+        message = message
+        raise ServiceError
+      end
 
+      def error?
+        !success?
+      end
+
+      private
+      
+      def _service_success=(result)
+        @_service_success = result
       end
     end
 
-    module ClassMethods
+    class_methods do
+      def after_serve(*filters, &blk)
+        set_callback(:serve, :after, *filters, &blk)
+      end
+
+      def around_serve(*filters, &blk)
+        set_callback(:serve, :around, *filters, &blk)
+      end
+
+      def before_serve(*filters, &blk)
+        set_callback(:serve, :before, *filters, &blk)
+      end
+
       def serve(*args)
         instance = self.new
         begin
-          instance.serve(*args)
+          instance.run_callbacks :serve do
+            instance.serve(*args)
+          end
           instance.send(:_service_success=, true)
         rescue ServiceError
           instance.send(:_service_success=, false)
