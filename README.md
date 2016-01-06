@@ -26,9 +26,15 @@ Or install it yourself as:
 class MyBusinessBehavior
   # include module
   include ::Cater::Service
+
+  after_serve :_log_stuff
   
   def serve(parameter)
     error! unless parameter
+  end
+
+  def _log_stuff
+    Rails.logger.fatal("Stuff logged")
   end
 end
 

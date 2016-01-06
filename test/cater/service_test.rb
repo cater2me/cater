@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Cater::ServiceTest < Minitest::Test
   class ServiceClass
-    include ::Cater::Service
+    include ::Cater::Service    
 
     def serve(should_fail:)
       if should_fail
@@ -11,6 +11,7 @@ class Cater::ServiceTest < Minitest::Test
         false
       end
     end
+
   end
 
   def setup
