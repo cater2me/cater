@@ -27,9 +27,9 @@ class MyBusinessBehavior
   # include module
   include ::Cater::Service
 
-  after_serve :_log_stuff
+  after_call :_log_stuff
   
-  def serve(parameter)
+  def call(parameter)
     error! unless parameter
   end
 
@@ -38,14 +38,14 @@ class MyBusinessBehavior
   end
 end
 
-# Now feel free to invoke .serve class method
-successful_service = MyBusinessBehavior.serve(true)
+# Now feel free to invoke .call class method
+successful_service = MyBusinessBehavior.call(true)
 successful_service.success?
 # true
 successful_service.error?
 # false
 
-error_service =  MyBusinessBehavior.serve(false)
+error_service =  MyBusinessBehavior.call(false)
 error_service.error?
 # true
 error_service.success?
