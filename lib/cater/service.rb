@@ -11,7 +11,8 @@ module Cater
       include ActiveSupport::Callbacks
 
       attr_accessor :message
-      define_callbacks :call
+
+      define_callbacks :call, :success, :error
 
       def success?
         fail "Service was not called yet" if @_service_success.nil?
@@ -47,15 +48,25 @@ module Cater
         set_callback(:call, :before, *filters, &blk)
       end
 
+      def after_success(*filters, &blk)
+        set_callback(:success, :after, *filters, &blk)
+      end
+
+      def after_error(*filters, &blk)
+        set_callback(:error, :after, *filters, &blk)
+      end
+
       def call(*args)
         instance = self.new
-        begin
-          instance.run_callbacks :call do
+        instance.run_callbacks :call do
+          begin
             instance.call(*args)
+            instance.send(:_service_success=, true)
+            instance.run_callbacks :success
+          rescue ServiceError
+            instance.send(:_service_success=, false)
+            instance.run_callbacks :error
           end
-          instance.send(:_service_success=, true)
-        rescue ServiceError
-          instance.send(:_service_success=, false)
         end
         
         return instance
