@@ -28,6 +28,16 @@ module Cater
         !success?
       end
 
+      def on_success
+        yield self if block_given? && success?
+        self
+      end
+
+      def on_error
+        yield self if block_given? && error?
+        self
+      end
+
       private
       
       def _service_success=(result)
