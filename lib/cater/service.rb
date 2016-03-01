@@ -20,7 +20,7 @@ module Cater
       end
 
       def error!(message=nil)
-        message = message
+        self.message = message
         raise ServiceError
       end
 
