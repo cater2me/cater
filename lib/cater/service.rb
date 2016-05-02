@@ -38,6 +38,10 @@ module Cater
         self
       end
 
+      def input_validators
+        self.class.input_validators
+      end
+
       private
       
       def _service_success=(result)
@@ -66,10 +70,23 @@ module Cater
         set_callback(:error, :after, *filters, &blk)
       end
 
+      def required(&block)
+        self.input_validators.send(:required, &block)
+      end
+
+      def optional(&block)
+        self.input_validators.send(:optional, &block)
+      end
+
+      def input_validators
+        @input_validators ||= Cater::Validators::Input.new
+      end
+
       def call(*args)
         instance = self.new
         instance.run_callbacks :call do
           begin
+            instance.input_validators.validate(Hash[*args], instance)
             instance.call(*args)
             instance.send(:_service_success=, true)
             instance.run_callbacks :success
@@ -81,6 +98,7 @@ module Cater
         
         return instance
       end
+
     end
 
   end
