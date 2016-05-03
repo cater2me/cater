@@ -1,10 +1,6 @@
-require 'active_model'
-
 module Cater
   module Validators
     class Boolean
-      include ActiveModel::Model
-
       @default_options = {
         :nils => false
       }
@@ -14,28 +10,23 @@ module Cater
         "false" => false, "FALSE" => false, "0" => false, 0 => false, false => false
       }
 
-      attr_accessor :options, :name, :errors
+      attr_accessor :options, :name
 
       def initialize(name, opts = {})
-        self.options    = (@default_options || {}).merge(opts)
-        self.name       = name
-        self.errors     = ActiveModel::Errors.new(self)
+        self.options = (@default_options || {}).merge(opts)
+        self.name    = name
       end
 
-      def validate(data)
-        self.errors.clear
-        
+      def validate(data, service)
         if data.nil? || data == ""
-          errors.add(name, "cannot be nil") unless options[:nils]
+          service.error!(attr: name, message:"cannot be nil") unless options[:nils]
         else
           data = data.to_s if data.is_a?(Fixnum)
-
           res = BOOL_MAP[data]
           if res.nil?
-            errors.add(name, "should be boolean") 
+            service.error!(attr: name, message: "should be boolean") 
           end
         end
-
       end
 
     end

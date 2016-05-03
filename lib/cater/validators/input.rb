@@ -1,16 +1,11 @@
-require 'active_model'
-
 module Cater
   module Validators
     class Input
-      include ActiveModel::Model
-
-      attr_accessor :required_inputs, :errors
+      attr_accessor :required_inputs
 
       def initialize(opts = {}, &block)
         @required_inputs  = {}
         @current_inputs   = @required_inputs
-        self.errors       = ActiveModel::Errors.new(self)
 
         if block_given?
           instance_eval &block
@@ -27,12 +22,10 @@ module Cater
       end
 
       def validate(args, service)
-        self.errors.clear
+        service.errors.clear
         required_inputs.each_pair do |attr, validator|
-          validator.validate(args[attr])
-          errors.add(validator.name, validator.errors[validator.name]) if validator.errors.any?
+          validator.validate(args[attr], service)
         end
-        service.error!(errors) if errors.any?
       end
 
       def boolean(name, options = {}, &block)
