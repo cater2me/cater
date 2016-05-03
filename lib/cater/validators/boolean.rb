@@ -27,14 +27,15 @@ module Cater
         
         if data.nil? || data == ""
           errors.add(name, "cannot be nil") unless options[:nils]
+        else
+          data = data.to_s if data.is_a?(Fixnum)
+
+          res = BOOL_MAP[data]
+          if res.nil?
+            errors.add(name, "should be boolean") 
+          end
         end
 
-        data = data.to_s if data.is_a?(Fixnum)
-
-        res = BOOL_MAP[data]
-        if res.nil?
-          errors.add(name, "cannot be nil") 
-        end
       end
 
     end

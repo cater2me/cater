@@ -64,6 +64,6 @@ class Cater::ServiceTest < Minitest::Test
 
   def test_validation_failed?
     instance = ServiceClass.call(should_fail: 'Abc')
-    assert_equal [['Should fail cannot be nil']], instance.message["should_fail"]
+    assert_equal [['should be boolean']], instance.message["should_fail"]
   end
 end
