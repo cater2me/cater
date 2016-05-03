@@ -1,6 +1,6 @@
 module Cater
   module Validators
-    class Model < Input
+    class Model
       @default_options = {
         :class => nil,
         :new_records => false
@@ -17,16 +17,11 @@ module Cater
       def validate(data)
         _initialize_constants!
 
-        if data.nil?
-          return error_messages << "#{name} model is required"
+        if data.nil? || !data.is_a?(options[:class])
+          error_messages << "#{name} model is required"
+        elsif !options[:new_records] && (data.respond_to?(:new_record?) && data.new_record?)
+          error_messages << "#{name} model is a new record" 
         end
-
-        if data.is_a?(options[:class])
-          return error_messages << "#{name} model is a new record" if !options[:new_records] && (data.respond_to?(:new_record?) && data.new_record?)
-          return true
-        end
-
-        return error_messages << "#{name} model is required"
       end
 
       private

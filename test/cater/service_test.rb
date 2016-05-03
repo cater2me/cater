@@ -4,6 +4,10 @@ class Cater::ServiceTest < Minitest::Test
   class ServiceClass
     include ::Cater::Service    
 
+    required do 
+      boolean :should_fail 
+    end
+
     def call(should_fail:)
       if should_fail
         error!("ERROR")
@@ -11,7 +15,6 @@ class Cater::ServiceTest < Minitest::Test
         false
       end
     end
-
   end
 
   def setup
@@ -41,7 +44,7 @@ class Cater::ServiceTest < Minitest::Test
 
   def test_content_of_message
     instance = ServiceClass.call(should_fail: 1)
-    assert_equal "ERROR", instance.message
+    assert_equal "ERROR", instance.errors
   end
 
   def test_responses_to_success?
@@ -52,5 +55,15 @@ class Cater::ServiceTest < Minitest::Test
   def test_responses_to_error?
     instance = ServiceClass.call(should_fail: 1)
     instance.respond_to? :error?
+  end
+
+  def test_responses_to_validators?
+    instance = ServiceClass.call(should_fail: 1)
+    instance.respond_to? :input_validators
+  end
+
+  def test_validation_failed?
+    instance = ServiceClass.call(should_fail: 'Abc')
+    assert_equal ['Should fail cannot be nil'], instance.errors[:service].full_messages
   end
 end

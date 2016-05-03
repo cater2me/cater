@@ -28,7 +28,11 @@ class MyBusinessBehavior
   include ::Cater::Service
 
   after_call :_log_stuff
-  
+
+  required do
+    boolean :parameter
+  end
+
   def call(parameter)
     error! unless parameter
   end
@@ -49,6 +53,14 @@ error_service =  MyBusinessBehavior.call(false)
 error_service.error?
 # true
 error_service.success?
+# false
+
+invalid_service =  MyBusinessBehavior.call()
+invalid_service.error?
+# true
+invalid_service.message
+# { "is_one" => ["parameter is required"] }
+invalid_service.success?
 # false
 
 ```

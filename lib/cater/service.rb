@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'active_support/callbacks'
+require 'active_model'
 
 module Cater
   class ServiceError < Exception; end
@@ -9,8 +10,9 @@ module Cater
 
     included do
       include ActiveSupport::Callbacks
+      include ActiveModel::Model
 
-      attr_accessor :message
+      attr_accessor :errors
 
       define_callbacks :call, :success, :error
 
@@ -20,7 +22,9 @@ module Cater
       end
 
       def error!(message=nil)
-        self.message = message
+        # self.message = message
+        self.errors = ActiveModel::Errors.new(self)
+        errors.add(:service, message)
         raise ServiceError
       end
 
@@ -74,16 +78,14 @@ module Cater
         self.input_validators.send(:required, &block)
       end
 
-      def optional(&block)
-        self.input_validators.send(:optional, &block)
-      end
-
       def input_validators
         @input_validators ||= Cater::Validators::Input.new
+        # Cater::Validators::Input.new
       end
 
       def call(*args)
         instance = self.new
+        # instance.errors.clear
         instance.run_callbacks :call do
           begin
             instance.input_validators.validate(Hash[*args], instance)

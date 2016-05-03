@@ -1,13 +1,16 @@
+require 'active_model'
+
 module Cater
   module Validators
     class Input
-      attr_accessor :optional_inputs, :required_inputs, :error_messages
+      include ActiveModel::Model
+
+      attr_accessor :required_inputs, :errors
 
       def initialize(opts = {}, &block)
-        @optional_inputs  = {}
         @required_inputs  = {}
         @current_inputs   = @required_inputs
-        @error_messages   = {}
+        self.errors       = ActiveModel::Errors.new(self)
 
         if block_given?
           instance_eval &block
@@ -19,25 +22,18 @@ module Cater
         instance_eval &block
       end
 
-      def optional
-        @current_inputs = @optional_inputs
-        instance_eval &block
-      end
-
       def required_keys
         @required_inputs.keys
       end
 
-      def optional_keys
-        @optional_inputs.keys
-      end
-
       def validate(args, service)
+        self.errors.clear
+
         required_inputs.each_pair do |attr, validator|
           validator.validate(args[attr])
-          @error_messages["#{validator.name}"] = validator.error_messages if validator.error_messages.present?
+          errors.add(validator.name, validator.errors) if validator.errors.any?
         end
-        service.error!(@error_messages) if @error_messages.present?
+        service.error!(errors) if errors.any?
       end
 
       def boolean(name, options = {}, &block)
@@ -46,6 +42,10 @@ module Cater
 
       def model(name, options = {}, &block)
         @current_inputs[name.to_sym] = Cater::Validators::Model.new(name.to_sym, options)
+      end
+
+      def integer(name, options = {}, &block)
+        @current_inputs[name.to_sym] = Cater::Validators::Integer.new(name.to_sym, options)
       end
 
     end
