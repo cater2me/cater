@@ -28,10 +28,9 @@ module Cater
 
       def validate(args, service)
         self.errors.clear
-
         required_inputs.each_pair do |attr, validator|
           validator.validate(args[attr])
-          errors.add(validator.name, validator.errors) if validator.errors.any?
+          errors.add(validator.name, validator.errors.full_messages) if validator.errors.any?
         end
         service.error!(errors) if errors.any?
       end
