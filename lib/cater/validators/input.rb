@@ -3,7 +3,7 @@ module Cater
     class Input
       attr_accessor :required_inputs
 
-      def initialize(opts = {}, &block)
+      def initialize(&block)
         @required_inputs  = {}
         @current_inputs   = @required_inputs
 
