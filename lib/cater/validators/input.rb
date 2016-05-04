@@ -24,7 +24,7 @@ module Cater
       def validate(args, service)
         service.errors.clear
         required_inputs.each_pair do |attr, validator|
-          validator.validate(args[attr], service)
+          validator.validate(data: args[attr], service: service)
         end
       end
 

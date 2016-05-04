@@ -21,7 +21,7 @@ module Cater
         @_service_success
       end
 
-      def error!(attr:'service', message:nil)
+      def error!(attr:'base', message:nil)
         self.errors.add(attr, message)
         raise ServiceError
       end

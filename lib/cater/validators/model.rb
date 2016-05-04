@@ -1,37 +1,40 @@
 module Cater
   module Validators
     class Model
-      @default_options = {
+      DEFAULTS = {
         :class => nil,
         :new_records => false
       }
 
-      attr_accessor :options, :error_messages, :name
+      attr_accessor :options, :name
 
       def initialize(name, opts = {})
-        self.options        = (@default_options || {}).merge(opts)
+        self.options        = (DEFAULTS || {}).merge(opts)
         self.name           = name
-        self.error_messages = []
       end
 
-      def validate(data)
-        _initialize_constants!
+      def validate(data: data, service: service)
+        _initialize_constants!(service)
 
         if data.nil? || !data.is_a?(options[:class])
-          error_messages << "#{name} model is required"
+          service.error!(attr: name, message:"model is required")
         elsif !options[:new_records] && (data.respond_to?(:new_record?) && data.new_record?)
-          error_messages << "#{name} model is a new record" 
+          service.error!(attr: name, message:"model is a new record")
         end
       end
 
       private
 
-      def _initialize_constants!
+      def _initialize_constants!(service)
         @initialize_constants ||= begin
           class_const = options[:class] || name.to_s.camelize
-          class_const = class_const.constantize if class_const.is_a?(String)
-          options[:class] = class_const
-          true
+          begin
+            class_const = class_const.constantize if class_const.is_a?(String)
+            options[:class] = class_const
+            true
+          rescue Exception
+            service.error!(attr: name, message:"cannot find such model")
+          end
         end
       end
 

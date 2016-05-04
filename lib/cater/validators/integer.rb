@@ -1,42 +1,39 @@
 module Cater
   module Validators
     class Integer
-      @default_options = {
+      DEFAULTS = {
         :nils => false,
         :min => nil,
         :max => nil,
         :in => nil
       }
 
-      attr_accessor :options, :error_messages, :name
+      attr_accessor :options, :name
 
       def initialize(name, opts = {})
-        self.options        = (@default_options || {}).merge(opts)
+        self.options        = (DEFAULTS || {}).merge(opts)
         self.name           = name
-        self.error_messages = []
       end
 
-      def validate(data)
+      def validate(data: data, service: service)
         if (data.nil? || data == "") && !options[:nils]
-          error_messages << "#{name} is required"
+          service.error!(attr: name, message: "cannot be nil")
         end
 
         if !data.is_a?(Fixnum)
           if data.is_a?(String) && data =~ /^-?\d/
             data = data.to_i
-          else
-            error_messages << "#{name} is not an integer"
           end
         end
 
-        if !data.is_a?(Integer)
-          error_messages << "#{name} is not an integer"
+        if !data.is_a?(Integer) && !data.is_a?(Fixnum)
+          service.error!(attr: name, message:"is not an integer")
         elsif options[:min] && data < options[:min]
-          error_messages << "#{name} should be bigger or equal to #{options[:min]}"
+          service.error!(attr: name, message: "should be bigger or equal to #{options[:min]}")
         elsif options[:max] && data > options[:max]
-          error_messages << "#{name} should be less or equal to #{options[:max]}"
+          service.error!(attr: name, message: "should be less or equal to #{options[:max]}")
         elsif options[:in] && !options[:in].include?(data)
-          error_messages << "#{name} should be in #{options[:in]}"
+          service.error!(attr: name, message: "should be from #{options[:in].first} to #{options[:in].last}")
         end          
       end
     end

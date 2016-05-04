@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Cater::ServiceTest < Minitest::Test
   class ServiceClass
-    include ::Cater::Service    
+    include ::Cater::Service
 
     required do 
       boolean :should_fail 
@@ -37,14 +37,14 @@ class Cater::ServiceTest < Minitest::Test
     refute instance.success?
   end
 
-  def test_responses_to_message
+  def test_responses_to_errors
     instance = ServiceClass.call(should_fail: 1)
-    instance.respond_to? :message
+    instance.respond_to? :errors
   end
 
-  def test_content_of_message
+  def test_content_of_errors
     instance = ServiceClass.call(should_fail: 1)
-    assert_equal ["ERROR"], instance.errors.messages[:service]
+    assert_equal ["ERROR"], instance.errors.messages[:base]
   end
 
   def test_responses_to_success?

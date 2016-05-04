@@ -1,7 +1,7 @@
 module Cater
   module Validators
     class Boolean
-      @default_options = {
+      DEFAULTS = {
         :nils => false
       }
 
@@ -13,11 +13,11 @@ module Cater
       attr_accessor :options, :name
 
       def initialize(name, opts = {})
-        self.options = (@default_options || {}).merge(opts)
+        self.options = (DEFAULTS || {}).merge(opts)
         self.name    = name
       end
 
-      def validate(data, service)
+      def validate(data:nil, service:)
         if data.nil? || data == ""
           service.error!(attr: name, message:"cannot be nil") unless options[:nils]
         else
