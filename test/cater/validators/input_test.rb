@@ -56,11 +56,6 @@ class Cater::InputTest < Minitest::Test
     assert_instance_of(Cater::Validators::Integer, @input.required_inputs[:order_id])
   end
 
-  def test_call_required_with_block_set_required_keys
-    @input.send(:required, &model_block)
-    assert_equal [:order], @input.required_keys
-  end
-
   def test_validate_clean_errors
     args = { paid: true }
     service = ServiceClass.call(args)

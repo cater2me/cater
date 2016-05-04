@@ -65,6 +65,31 @@ invalid_service.success?
 
 ```
 
+## Validation
+Currently Cater support next types of required input validation:
+
+### Model
+
+String name of model with next options:
+
+* class - model class name, if different from given. Default to nil.
+* new_records - pass new records as valid. Default to false.
+
+### Integer
+
+Integer values with next options:
+
+* nils - allow nil values. Default to false.
+* min - minimum value for attribute. Default to nil.
+* max - maximum value for attribute. Default to nil.
+* in - range of acceptance values in [min, max] format. Default to nil.
+
+### Boolean
+
+Boolean values in next formats are excepted: true, 'true', 1, '1'. Available options:
+
+* nils - allow nil values. Default to false.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -75,7 +100,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Please stick to `git flow` branch convention
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cater. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/rubakas/cater. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License

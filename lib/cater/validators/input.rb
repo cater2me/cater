@@ -3,22 +3,14 @@ module Cater
     class Input
       attr_accessor :required_inputs
 
-      def initialize(&block)
+      def initialize
         @required_inputs  = {}
         @current_inputs   = @required_inputs
-
-        if block_given?
-          instance_eval &block
-        end
       end
 
       def required(&block)
         @current_inputs = @required_inputs
         instance_eval &block
-      end
-
-      def required_keys
-        @required_inputs.keys
       end
 
       def validate(args, service)
