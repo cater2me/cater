@@ -17,7 +17,7 @@ module Cater
 
       def validate(data: data, service: service)
         if (data.nil? || data == "") && !options[:nils]
-          service.error!(attr: name, message: "cannot be nil")
+          service.error!("cannot be nil", name)
         end
 
         if !data.is_a?(Fixnum)
@@ -27,13 +27,13 @@ module Cater
         end
 
         if !data.is_a?(Integer) && !data.is_a?(Fixnum)
-          service.error!(attr: name, message:"is not an integer")
+          service.error!("is not an integer", name)
         elsif options[:min] && data < options[:min]
-          service.error!(attr: name, message: "should be bigger or equal to #{options[:min]}")
+          service.error!( "should be bigger or equal to #{options[:min]}", name)
         elsif options[:max] && data > options[:max]
-          service.error!(attr: name, message: "should be less or equal to #{options[:max]}")
+          service.error!( "should be less or equal to #{options[:max]}", name)
         elsif options[:in] && !options[:in].include?(data)
-          service.error!(attr: name, message: "should be from #{options[:in].first} to #{options[:in].last}")
+          service.error!( "should be from #{options[:in].first} to #{options[:in].last}", name)
         end          
       end
     end

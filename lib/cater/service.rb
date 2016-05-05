@@ -7,12 +7,12 @@ module Cater
 
   module Service
     extend ActiveSupport::Concern
-    include ActiveModel::Model
 
     included do
+      include ActiveModel::Model
       include ActiveSupport::Callbacks
 
-      attr_accessor :errors
+      attr_accessor :message
 
       define_callbacks :call, :success, :error
 
@@ -21,7 +21,8 @@ module Cater
         @_service_success
       end
 
-      def error!(attr:'base', message:nil)
+      def error!(message=nil, attr='base')
+        self.message = message
         self.errors.add(attr, message)
         raise ServiceError
       end
@@ -82,7 +83,6 @@ module Cater
 
       def call(*args)
         instance = self.new
-        instance.errors = ActiveModel::Errors.new(instance)
         instance.run_callbacks :call do
           begin
             instance.input_validators.validate(Hash[*args], instance)

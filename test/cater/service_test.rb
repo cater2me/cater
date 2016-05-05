@@ -10,7 +10,7 @@ class Cater::ServiceTest < Minitest::Test
 
     def call(should_fail:)
       if should_fail
-        error!(message: "ERROR")
+        error!("ERROR")
       else
         false
       end
@@ -37,9 +37,19 @@ class Cater::ServiceTest < Minitest::Test
     refute instance.success?
   end
 
+  def test_responses_to_message
+    instance = ServiceClass.call(should_fail: 1)
+    instance.respond_to? :message
+  end
+
   def test_responses_to_errors
     instance = ServiceClass.call(should_fail: 1)
     instance.respond_to? :errors
+  end
+
+  def test_content_of_message
+    instance = ServiceClass.call(should_fail: 1)
+    assert_equal "ERROR", instance.message
   end
 
   def test_content_of_errors

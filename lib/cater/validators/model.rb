@@ -17,9 +17,9 @@ module Cater
         _initialize_constants!(service)
 
         if data.nil? || !data.is_a?(options[:class])
-          service.error!(attr: name, message:"model is required")
+          service.error!("model is required", name)
         elsif !options[:new_records] && (data.respond_to?(:new_record?) && data.new_record?)
-          service.error!(attr: name, message:"model is a new record")
+          service.error!("model is a new record", name)
         end
       end
 
@@ -33,7 +33,7 @@ module Cater
             options[:class] = class_const
             true
           rescue Exception
-            service.error!(attr: name, message:"cannot find such model")
+            service.error!("cannot find such model", name)
           end
         end
       end

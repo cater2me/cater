@@ -19,12 +19,12 @@ module Cater
 
       def validate(data:nil, service:)
         if data.nil? || data == ""
-          service.error!(attr: name, message:"cannot be nil") unless options[:nils]
+          service.error!("cannot be nil", name) unless options[:nils]
         else
           data = data.to_s if data.is_a?(Fixnum)
           res = BOOL_MAP[data]
           if res.nil?
-            service.error!(attr: name, message: "should be boolean") 
+            service.error!( "should be boolean", name) 
           end
         end
       end
