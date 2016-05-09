@@ -6,6 +6,7 @@ class Cater::ModelTest < Minitest::Test
 
   class ServiceClass
     include ::Cater::Service
+    include ::Cater::Validator
 
     required do 
       model :user
@@ -22,6 +23,7 @@ class Cater::ModelTest < Minitest::Test
 
   class ServiceClass2
     include ::Cater::Service
+    include ::Cater::Validator
 
     required do 
       model :product

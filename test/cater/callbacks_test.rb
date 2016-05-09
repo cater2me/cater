@@ -4,6 +4,8 @@ class Cater::CallbacksTest < Minitest::Test
   
   class ServiceWithCallcacksClass
     include ::Cater::Service
+    include ::Cater::Validator
+    
     attr_accessor :attr_set_with_callback, :another_attr_set_with_callback
     
     after_call :set_after_call

@@ -3,6 +3,7 @@ require 'test_helper'
 class Cater::BooleanTest < Minitest::Test
   class ServiceClass
     include ::Cater::Service
+    include ::Cater::Validator
 
     required do 
       boolean :should_fail

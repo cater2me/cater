@@ -3,6 +3,7 @@ require 'test_helper'
 class Cater::IntegerTest < Minitest::Test
   class ServiceClass
     include ::Cater::Service
+    include ::Cater::Validator
 
     required do 
       integer :amount, min: 10, max: 20
@@ -19,6 +20,7 @@ class Cater::IntegerTest < Minitest::Test
 
   class ServiceClass2
     include ::Cater::Service
+    include ::Cater::Validator
 
     required do 
       integer :amount, in: [30,40]

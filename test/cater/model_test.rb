@@ -5,6 +5,7 @@ class Cater::ModelTest < Minitest::Test
   
   class ServiceModel
     include ::Cater::Service
+    include ::Cater::Validator
     
     attr_accessor :attr_set_with_callback, :another_attr_set_with_callback
     
