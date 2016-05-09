@@ -1,16 +1,10 @@
 require 'active_support/concern'
-require 'active_support/callbacks'
-require 'active_model'
 
 module Cater
-  class ServiceError < Exception; end
-
   module Validator
     extend ActiveSupport::Concern
 
     included do
-      include ActiveModel::Model
-
       attr_accessor :input_validators
 
       def input_validators
