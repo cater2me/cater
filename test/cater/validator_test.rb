@@ -18,10 +18,6 @@ class Cater::ValidatorTest < Minitest::Test
     end
   end
 
-  def model_block
-    Proc.new{ required do model :order end}
-  end
-
   def setup
     @input = ::Cater::Validator
   end
