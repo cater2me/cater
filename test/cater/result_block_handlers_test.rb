@@ -3,6 +3,7 @@ require 'test_helper'
 class Cater::ResultBlockHandlersTest < Minitest::Test
   class ServiceClass
     include ::Cater::Service
+    include ::Cater::Validator
 
     attr_accessor :outcome
 

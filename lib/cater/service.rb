@@ -21,9 +21,9 @@ module Cater
         @_service_success
       end
 
-      def error!(message=nil)
+      def error!(message=nil, attr='base')
         self.message = message
-        self.errors.add(:base, message)
+        self.errors.add(attr, message)
         raise ServiceError
       end
 
@@ -73,6 +73,7 @@ module Cater
         instance = self.new
         instance.run_callbacks :call do
           begin
+            instance.input_validators.validate(Hash[*args], instance)
             instance.call(*args)
             instance.send(:_service_success=, true)
             instance.run_callbacks :success
