@@ -1,9 +1,9 @@
 require 'test_helper'
 require 'active_model'
 
-class Cater::ModelTest < Minitest::Test
+class Cater::ModelErrorsTest < Minitest::Test
   
-  class ServiceModel
+  class ExampleService
     include ::Cater::Service
     
     attr_accessor :attr_set_with_callback, :another_attr_set_with_callback
@@ -38,13 +38,13 @@ class Cater::ModelTest < Minitest::Test
   end
 
   def test_errors_object_presence
-    model = ServiceModel.call(should_fail: false)
+    model = ExampleService.call(should_fail: false)
     assert model.valid?
     assert model.errors.blank?
   end
 
   def test_errors_object_presence
-    model = ServiceModel.call(should_fail: true)
+    model = ExampleService.call(should_fail: true)
     refute model.errors.blank?
   end
 
