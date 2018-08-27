@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'active_support/callbacks'
+require 'active_model'
 
 module Cater
   class ServiceError < Exception; end
@@ -8,6 +9,7 @@ module Cater
     extend ActiveSupport::Concern
 
     included do
+      include ActiveModel::Model
       include ActiveSupport::Callbacks
 
       attr_accessor :message
@@ -20,6 +22,11 @@ module Cater
       end
 
       def error!(message=nil)
+        if message.kind_of? Hash
+          message.each {|attr, msg| self.errors.add(attr, msg)}
+        else
+          self.errors.add(:base, message)
+        end
         self.message = message
         raise ServiceError
       end
@@ -39,7 +46,7 @@ module Cater
       end
 
       private
-      
+
       def _service_success=(result)
         @_service_success = result
       end
@@ -78,7 +85,7 @@ module Cater
             instance.run_callbacks :error
           end
         end
-        
+
         return instance
       end
     end
