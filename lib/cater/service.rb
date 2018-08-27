@@ -22,8 +22,12 @@ module Cater
       end
 
       def error!(message=nil)
+        if message.kind_of? Hash
+          message.each {|attr, msg| self.errors.add(attr, msg)}
+        else
+          self.errors.add(:base, message)
+        end
         self.message = message
-        self.errors.add(:base, message)
         raise ServiceError
       end
 
@@ -42,7 +46,7 @@ module Cater
       end
 
       private
-      
+
       def _service_success=(result)
         @_service_success = result
       end
@@ -81,7 +85,7 @@ module Cater
             instance.run_callbacks :error
           end
         end
-        
+
         return instance
       end
     end
