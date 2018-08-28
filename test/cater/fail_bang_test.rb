@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Cater::FailTest < Minitest::Test
+class Cater::FailBangTest < Minitest::Test
   class ServiceClass
     include ::Cater::Service
 
@@ -59,6 +59,17 @@ class Cater::FailTest < Minitest::Test
     assert_equal ["ERROR"], instance.errors.full_messages
   end
 
+  def test_content_of_full_messages_with_attr
+    instance = ServiceClass.call(name: "ERROR")
+    assert_equal ["Name ERROR"], instance.errors.full_messages
+  end
+
+  def test_content_of_full_messages_with_attrs
+    instance = ServiceClass.call({name: "ERROR", :email => 'is required'})
+    expected = ["Name ERROR", 'Email is required']
+    assert_equal expected, instance.errors.full_messages
+  end
+
   def test_content_of_messages_base
     instance = ServiceClass.call("ERROR")
     expected = {:base=>["ERROR"]}
@@ -76,4 +87,11 @@ class Cater::FailTest < Minitest::Test
     expected = {:name=>["ERROR"], :name2 => ["ERROR2"]}
     assert_equal expected, instance.errors.messages
   end
+
+  def test_content_with_message_as_symbol
+    instance = ServiceClass.call(:invalid)
+    expected = {:base=>["is invalid"]}
+    assert_equal expected, instance.errors.messages
+  end
+
 end
