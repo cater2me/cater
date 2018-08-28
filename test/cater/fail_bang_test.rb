@@ -14,6 +14,16 @@ class Cater::FailBangTest < Minitest::Test
 
   end
 
+  class Service2Class
+    include ::Cater::Service
+
+    def call(*error_args)
+      ServiceClass.call(*error_args)
+          .on_success { false }
+          .on_error { |s| fail!(s.errors) }
+    end
+  end
+
   def setup
   end
 
@@ -92,6 +102,18 @@ class Cater::FailBangTest < Minitest::Test
     instance = ServiceClass.call(:invalid)
     expected = {:base=>["is invalid"]}
     assert_equal expected, instance.errors.messages
+  end
+
+  def test_content_with_errors_object
+    instance = Service2Class.call(name: 'too short')
+    expected = {:name=>["too short"]}
+    assert_equal expected, instance.errors.messages
+  end
+
+  def test_content_full_messages_with_errors_object
+    instance = Service2Class.call(name: 'too short', 'email' => 'already used')
+    expected = ["Name too short", "Email already used"]
+    assert_equal expected, instance.errors.full_messages
   end
 
 end
