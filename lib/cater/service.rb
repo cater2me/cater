@@ -21,9 +21,41 @@ module Cater
         @_service_success
       end
 
+      # raise error
+      # @deprecated — use fail!
+      #
+      # error! "Something is required"
+      # errors.messages
+      # # => {:base=> ["Something is required"]}
       def error!(message=nil)
-        if message.kind_of? Hash
-          message.each {|attr, msg| self.errors.add(attr, msg)}
+        self.message = message
+        self.errors.add(:base, message)
+        raise ServiceError
+      end
+
+      # raise error
+      #
+      # fail! "Something is required"
+      # errors.messages
+      # # => {:base=> ["Something is required"]}
+      #
+      # fail! name: "is required", email: "invalid"
+      # errors.messages
+      # # => {:name=> ["is required"], :email=> ["invalid"]}
+      #
+      # fail! other_service.errors
+      #
+      def fail!(message)
+        if message.is_a? ActiveModel::Errors
+          self.errors.merge! message
+        elsif message.is_a? Hash
+          message.each do |attr, msg|
+            if msg.kind_of? Array
+              msg.each{|m| self.errors.add(attr, m)}
+            else
+              self.errors.add(attr, msg)
+            end
+          end
         else
           self.errors.add(:base, message)
         end

@@ -4,9 +4,9 @@ class Cater::ServiceTest < Minitest::Test
   class ServiceClass
     include ::Cater::Service
 
-    def call(*error_args)
-      if error_args.length > 0
-        error!(*error_args)
+    def call(should_fail:)
+      if should_fail
+        error!("ERROR")
       else
         false
       end
@@ -18,62 +18,39 @@ class Cater::ServiceTest < Minitest::Test
   end
 
   def test_call_on_class_returns_instance
-    instance = ServiceClass.call("ERROR")
+    instance = ServiceClass.call(should_fail: 1)
     assert instance.kind_of? ServiceClass
   end
 
   def test_success?
-    instance = ServiceClass.call()
+    instance = ServiceClass.call(should_fail: false)
     assert instance.success?
     refute instance.error?
   end
 
   def test_error?
-    instance = ServiceClass.call("ERROR")
+    instance = ServiceClass.call(should_fail: true)
     assert instance.error?
     refute instance.success?
   end
 
   def test_responses_to_message
-    instance = ServiceClass.call("ERROR")
+    instance = ServiceClass.call(should_fail: 1)
     instance.respond_to? :message
   end
 
   def test_content_of_message
-    instance = ServiceClass.call("ERROR")
+    instance = ServiceClass.call(should_fail: 1)
     assert_equal "ERROR", instance.message
   end
 
   def test_responses_to_success?
-    instance = ServiceClass.call("ERROR")
+    instance = ServiceClass.call(should_fail: 1)
     instance.respond_to? :success?
   end
 
   def test_responses_to_error?
-    instance = ServiceClass.call("ERROR")
+    instance = ServiceClass.call(should_fail: 1)
     instance.respond_to? :error?
-  end
-
-  def test_content_of_full_messages
-    instance = ServiceClass.call("ERROR")
-    assert_equal ["ERROR"], instance.errors.full_messages
-  end
-
-  def test_content_of_messages_base
-    instance = ServiceClass.call("ERROR")
-    expected = {:base=>["ERROR"]}
-    assert_equal expected, instance.errors.messages
-  end
-
-  def test_content_of_messages
-    instance = ServiceClass.call(name: "ERROR")
-    expected = {:name=>["ERROR"]}
-    assert_equal expected, instance.errors.messages
-  end
-
-  def test_content_of_few_messages
-    instance = ServiceClass.call(name: "ERROR", name2: "ERROR2")
-    expected = {:name=>["ERROR"], :name2 => ["ERROR2"]}
-    assert_equal expected, instance.errors.messages
   end
 end
