@@ -21,13 +21,35 @@ module Cater
         @_service_success
       end
 
+      # raise error
+      #
+      # error! "Something is required"
+      # errors.messages
+      # # => {:base=> ["Something is required"]}
+      #
+      # error! name: "is required", email: "invalid"
+      # errors.messages
+      # # => {:name=> ["is required"], :email=> ["invalid"]}
+      #
+      # error! other_service.errors,
+      #
       def error!(message=nil)
-        if message.kind_of? Hash
-          message.each {|attr, msg| self.errors.add(attr, msg)}
+        if message.kind_of?  ActiveModel::Errors
+          self.errors.copy! message
+          self.message = message.values.join ', '
+        elsif message.kind_of? Hash
+          message.each do |attr, msg|
+            if msg.kind_of? Array
+              msg.each{|m| self.errors.add(attr, m)}
+            else
+              self.errors.add(attr, msg)
+            end
+          end
+          self.message = message.values.join ', '
         else
           self.errors.add(:base, message)
+          self.message = message
         end
-        self.message = message
         raise ServiceError
       end
 
